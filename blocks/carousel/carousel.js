@@ -1,42 +1,45 @@
 export default function decorate(block) {
 
-  const slides = [...block.children];
+  const rows = [...block.children];
 
-  // wrapper
+  // main wrapper
   const sliderWrapper = document.createElement('div');
   sliderWrapper.className = 'slider-wrapper';
 
-  // track
+  // slider track
   const sliderTrack = document.createElement('div');
   sliderTrack.className = 'slider-track';
 
-  slides.forEach((slide) => {
+  rows.forEach((row) => {
 
-    const cols = [...slide.children];
+    const cols = [...row.children];
 
-    const slideItem = document.createElement('div');
-    slideItem.className = 'slide';
+    // skip if invalid
+    if (cols.length < 2) return;
+
+    const slide = document.createElement('div');
+    slide.className = 'slide';
 
     // image
-    const imageCol = cols[0];
+    const image = cols[0];
 
     // content
-    const contentCol = cols[1];
+    const content = cols[1];
 
-    slideItem.append(imageCol);
-    slideItem.append(contentCol);
+    slide.append(image);
+    slide.append(content);
 
-    sliderTrack.append(slideItem);
+    sliderTrack.append(slide);
   });
 
   // buttons
   const prevBtn = document.createElement('button');
   prevBtn.className = 'slider-btn prev';
-  prevBtn.innerText = '<';
+  prevBtn.innerHTML = '&#10094;';
 
   const nextBtn = document.createElement('button');
   nextBtn.className = 'slider-btn next';
-  nextBtn.innerText = '>';
+  nextBtn.innerHTML = '&#10095;';
 
   sliderWrapper.append(prevBtn);
   sliderWrapper.append(sliderTrack);
@@ -45,15 +48,16 @@ export default function decorate(block) {
   block.innerHTML = '';
   block.append(sliderWrapper);
 
-  // slider logic
+  // slider functionality
   let currentSlide = 0;
 
   function updateSlider() {
-    sliderTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+    sliderTrack.style.transform =
+      `translateX(-${currentSlide * 100}%)`;
   }
 
   nextBtn.addEventListener('click', () => {
-    if (currentSlide < slides.length - 1) {
+    if (currentSlide < sliderTrack.children.length - 1) {
       currentSlide += 1;
       updateSlider();
     }
