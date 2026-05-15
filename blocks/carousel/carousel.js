@@ -1,45 +1,42 @@
 export default function decorate(block) {
 
-  const rows = [...block.children];
+  const slides = [...block.children];
 
-  // main wrapper
+  // wrapper
   const sliderWrapper = document.createElement('div');
   sliderWrapper.className = 'slider-wrapper';
 
-  // slider track
+  // track
   const sliderTrack = document.createElement('div');
   sliderTrack.className = 'slider-track';
 
-  rows.forEach((row) => {
+  slides.forEach((slide) => {
 
-    const cols = [...row.children];
+    const cols = [...slide.children];
 
-    // skip if invalid
-    if (cols.length < 2) return;
-
-    const slide = document.createElement('div');
-    slide.className = 'slide';
+    const slideItem = document.createElement('div');
+    slideItem.className = 'slide';
 
     // image
-    const image = cols[0];
+    const imageCol = cols[0];
 
     // content
-    const content = cols[1];
+    const contentCol = cols[1];
 
-    slide.append(image);
-    slide.append(content);
+    slideItem.append(imageCol);
+    slideItem.append(contentCol);
 
-    sliderTrack.append(slide);
+    sliderTrack.append(slideItem);
   });
 
   // buttons
   const prevBtn = document.createElement('button');
   prevBtn.className = 'slider-btn prev';
-  prevBtn.innerHTML = '&#10094;';
+  prevBtn.innerText = '<';
 
   const nextBtn = document.createElement('button');
   nextBtn.className = 'slider-btn next';
-  nextBtn.innerHTML = '&#10095;';
+  nextBtn.innerText = '>';
 
   sliderWrapper.append(prevBtn);
   sliderWrapper.append(sliderTrack);
@@ -48,16 +45,15 @@ export default function decorate(block) {
   block.innerHTML = '';
   block.append(sliderWrapper);
 
-  // slider functionality
+  // slider logic
   let currentSlide = 0;
 
   function updateSlider() {
-    sliderTrack.style.transform =
-      `translateX(-${currentSlide * 100}%)`;
+    sliderTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
   }
 
   nextBtn.addEventListener('click', () => {
-    if (currentSlide < sliderTrack.children.length - 1) {
+    if (currentSlide < slides.length - 1) {
       currentSlide += 1;
       updateSlider();
     }
